@@ -1,68 +1,134 @@
 #!/usr/bin/env node
-// jslint wrapper for nodejs
-// Adapted from rhino.js. Copyright 2002 Douglas Crockford
-// Shebang removal regex uses insecure "."
-// JSLINT is provided by fulljslint.js modified to export the global
-/*global JSLINT */
+// jslint wrapper for nodejs 
+//
+// Adapted from rhino.js. Copyright 2002 Douglas Crockford 
+//
+// Adapted by Reid Burke (http://github.com/reid/node-jslint) 
+//
+// Additions by Daniel Lopretto (http://daniellopretto.com)
+//
+// JSLINT is provided by jslint.js modified to export the global
 
-(function (file) {
-    var e, i, input, len, success, pad,
-        path = __filename.split("/").slice(0, -2).join("/"),
+/*jslint 
+   white: false, browser: true, onevar: false, undef: true, nomen: true, 
+   eqeqeq: true, plusplus: true, bitwise: true, regexp: false, newcap: true, 
+   immed: true, strict: true */
+
+/*global 
+   JSLINT: true, require: true, process: false, __filename */
+
+"use strict";
+
+(function (args) {
+    var error_obj, file, i, input, len, options = {}, parserOptions, 
+        success, switches, 
+        
+
+    /*
+        This default list of options are assumptions,
+        override with the jslint syntax in your file.
+        See: http://www.jslint.com/
+    */
+        lint_options = {
+            browser: true,
+            devel: true,
+            onevar: true,
+            undef: true,
+            nomen: true,
+            eqeqeq: true,
+            plusplus: true,
+            bitwise: true,
+            regexp: true,
+            newcap: true,
+            strict: true,
+            immed: true
+        }, 
+    /*
+        Includes:
+    */
+        fs = require("fs"),
+        optparse = require('optparse'),
         sys = require("sys"),
-        fs = require("fs");
+        jslint = require("jslint").JSLINT;
 
-    if (!file) {
-        sys.puts("Usage: jslint file.js");
-        process.exit(1);
-    }
+    // Array of command line options:
+    switches = [
+        ['-h', '--help', 'Shows help sections'],
+        ['-m', '--show-members', 'Prints the members in file and exists']
+    ];
 
-    input = fs.readFileSync(file);
-    if (!input) {
-        sys.puts("jslint: Couldn't open file '" + file + "'.");
-        process.exit(1);
-    } else {
-        input = input.toString("utf8");
-    }
+    parserOptions = new optparse.OptionParser(switches);
 
-    JSLINT = require("jslint/fulljslint_export").JSLINT;
-
-    // remove shebang (lifted from node.js)
-    input = input.replace(/^\#\!.*/, "");
-
-    success = JSLINT(input, {
-        predef:   [ // CommonJS
-                    "exports", 
-                    // YUI
-                    "YUI",
-                    "YAHOO",
-                    "YAHOO_config",
-                    "YUI_config",
-                    "Y",
-                    // NodeJS
-                    "GLOBAL",
-                    "process",
-                    "require",
-                    "__filename",
-                    "module"       ]
+    parserOptions.on(2, function (value) {
+        file = value;
     });
 
-    if (!success) {
-        i = 0;
-        len = JSLINT.errors.length;
-        for (i=0; i<len; i++) {
-            pad = '' + (i + 1);
-            while (pad.length < 3) {
-                pad = ' ' + pad;
-            }
-            e = JSLINT.errors[i];
-            if (e) {
-                sys.puts(pad + ' ' + e.line + ',' + e.character + ': ' + e.reason);
-                sys.puts( '    ' + (e.evidence || '').replace(/^\s+|\s+$/, ""));
+    parserOptions.on("show-members", function () {
+        options.printMembers = true;
+    });
+
+    parserOptions.banner = 'Usage: ' + __filename + ' [options] file.js' + file + "\n";
+
+    // Common Setup for all options 
+    var getFileContents = function (filename) {
+        var input;
+        if (!filename) {
+            sys.puts(parserOptions.banner);
+            process.exit(1);
+        }
+        input = fs.readFileSync(filename);
+        if (!input) {
+            sys.puts("jslint: Couldn't open file '" + filename + "'.");
+            process.exit(1);
+        } else {
+            input = input.toString("utf8");
+        }
+        // remove shebang (lifted from node.js)
+        input = input.replace(/^\#\!.*/, "");
+        return input;
+    };
+
+    var printErrors = function (results) {
+        if (!results) {
+            for (i = 0; i < jslint.errors.length; i += 1) {
+                error_obj = jslint.errors[i];
+                sys.puts(file + ": on line " + error_obj.line + ":" + error_obj.character +
+                        ": " + error_obj.reason);
             }
         }
-        process.exit(2);
+    };
+
+    var printMembers = function () {
+        var i = 0, 
+            print = [],
+            scafold = '    ';
+
+        input = getFileContents(file);
+        success = jslint(input);
+
+        for (i in jslint.data().member) {
+            if (typeof(i) === "string") {
+                if ((scafold.length + i.length) > 72) {
+                    print += scafold + "\n";
+                    scafold = '    ';
+                } else {
+                    scafold += i + ", ";
+                }
+            }
+        }
+        sys.puts("/*members\n" + print + "*/");
+    };
+
+    // Take action according to command dline options
+    parserOptions.parse(args);
+
+    if (options.printMembers) {
+        printMembers();
+    } else {
+        input = getFileContents(file);
+        success = jslint(input, lint_options);
+        printErrors(success);
     }
 
-    sys.puts("OK");
-
-}(process.ARGV[2]));
+}(process.ARGV));
+// vim: set ft=javascript: 
