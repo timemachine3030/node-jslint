@@ -7,6 +7,17 @@ Easily use [jslint][] from the command line. Pass it the JS file you'd like to l
 
 It assumes [nodejs][] globals and tolerates shebangs.
 
+options
+-------
+
+-m, --show-members   Prints the members in file and exists
+        jslint --show-members foo.js
+        /*members
+            browser, devel, onevar, undef, nomen, eqeqeq, plusplus, bitwise, 
+            newcap, strict, immed, JSLINT, OptionParser, on, printMembers, 
+            puts, exit, readFileSync, toString, replace, errors, length, line, 
+        */
+
 Installation
 ------------
 
