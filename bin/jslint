@@ -8,6 +8,9 @@
 // Additions by Daniel Lopretto (http://daniellopretto.com)
 //
 // JSLINT is provided by jslint.js modified to export the global
+//
+// Dependencies: 
+//  - Optparse: http://github.com/jfd/optparse-js/
 
 /*jslint 
    white: false, browser: true, onevar: false, undef: true, nomen: true, 
