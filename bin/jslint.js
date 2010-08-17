@@ -26,7 +26,6 @@
     var file, i, input, len, options = {}, parserOptions, 
     success, switches, 
 
-
     /**
      * This default list of options are assumptions,
      * override with the jslint syntax in your file.
