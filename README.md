@@ -21,20 +21,17 @@ options
 Installation
 ------------
 
-You'll need [nodejs][] and [npm][], which is easy to install on OS X with [homebrew][]:
+You will need three files:
 
-    curl -L http://github.com/mxcl/homebrew/tarball/master | tar xz --strip 1 -C /usr/local
-    brew install npm
-
-Then install:
-
-    npm install http://github.com/reid/node-jslint/tarball/master
-
-You may also clone this repository then install in your working copy:
-
-    npm install .
-
-This package isn't yet in the npm registry. I'm working on it.
+ - optparse.js
+    - http://github.com/jfd/optparse-js/raw/master/lib/optparse.js
+    - Place in your node.js include path (~/.node_libraries/) 
+ - fulljslint_export.js
+    - http://github.com/timemachine3030/node-jslint/raw/master/lib/fulljslint_export.js
+    - Place in your node.js include path (~/.node_libraries/) 
+ - jslint
+    - http://github.com/timemachine3030/node-jslint/raw/master/bin/jslint
+    - Place in your run time path 
 
 License
 -------
@@ -53,5 +50,3 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 [jslint]: http://jslint.com/
 [nodejs]: http://nodejs.org/
-[npm]: http://github.com/isaacs/npm
-[homebrew]: http://github.com/mxcl/homebrew
