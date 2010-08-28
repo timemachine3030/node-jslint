@@ -24,13 +24,13 @@ Installation
 You will need three files:
 
  - optparse.js
-    - http://github.com/jfd/optparse-js/raw/master/lib/optparse.js
+    - <http://github.com/jfd/optparse-js/raw/master/lib/optparse.js>
     - Place in your node.js include path (~/.node_libraries/) 
  - fulljslint_export.js
-    - http://github.com/timemachine3030/node-jslint/raw/master/lib/fulljslint_export.js
+    - <http://github.com/timemachine3030/node-jslint/raw/master/lib/fulljslint_export.js>
     - Place in your node.js include path (~/.node_libraries/) 
  - jslint
-    - http://github.com/timemachine3030/node-jslint/raw/master/bin/jslint
+    - <http://github.com/timemachine3030/node-jslint/raw/master/bin/jslint>
     - Place in your run time path 
 
 License
