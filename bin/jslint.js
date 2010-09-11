@@ -76,8 +76,7 @@
         return input;
     },
     printErrors = function (results) {
-        var error_obj,
-            tools = require('tools');
+        var error_obj;
         if (!results) {
             for (i = 0; i < jslint.errors.length; i += 1) {
                 error_obj = jslint.errors[i];
@@ -86,6 +85,7 @@
                     ": " + error_obj.reason + "\n");
                 }
             }
+            process.exit(1);
         }
     },
     printMembers = function () {
