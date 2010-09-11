@@ -61,12 +61,12 @@
     getFileContents = function (filename) {
         var input;
         if (!filename) {
-            sys.puts(parserOptions.banner);
+            process.binding('stdio').writeError(parserOptions.banner);
             process.exit(1);
         }
         input = fs.readFileSync(filename);
         if (!input) {
-            sys.puts("jslint: Couldn't open file '" + filename + "'.");
+            process.binding('stdio').writeError("jslint: Couldn't open file '" + filename + "'.");
             process.exit(1);
         } else {
             input = input.toString("utf8");
@@ -82,8 +82,8 @@
             for (i = 0; i < jslint.errors.length; i += 1) {
                 error_obj = jslint.errors[i];
                 if (error_obj) {
-                    sys.puts(file + ": on line " + error_obj.line + ":" + error_obj.character +
-                    ": " + error_obj.reason);
+                    process.binding('stdio').writeError(file + ": on line " + error_obj.line + ":" + error_obj.character +
+                    ": " + error_obj.reason + "\n");
                 }
             }
         }
@@ -125,7 +125,7 @@
         options.printMembers = true;
     });
 
-    parserOptions.banner = 'Usage: ' + __filename + ' [options] file.js' + file + "\n";
+    parserOptions.banner = 'Usage: ' + __filename + " [options] file.js\n";
 
 
     // Take action according to command line options
